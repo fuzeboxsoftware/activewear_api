@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+require_relative 'lib/activewear_api'
+require 'optparse'
+
+ActivewearApi.config do |c|
+    c.account_number = '12762'
+    c.api_key = '9f8784ab-0f07-4a0c-909d-f02ca003b3ff'
+  end
+
+options = {}
+
+OptionParser.new do |op|
+    op.on('-m=s', '--method', 'Method to fire on Activewear API') { |method| options[:method] = method }
+    op.on('-f=s', '--filters', 'Filters to filter through products') { |filters| options[:filters] = filters }
+    op.on('-w=s', '--warehouses', 'Warehouses to filter through products') { |warehouses| options[:warehouses] = warehouses }
+    op.on('-l=s', '--fields', 'Fields to filter through products') { |fields| options[:fields] = fields }
+end.parse!
+
+# Fetch products by calling method
+apiMethod = options[:method]
+apiFilters = options[:filters]
+apiWarehouses = options[:warehouses]
+apiFields = options[:fields]
+
+case apiMethod
+when "productsGetAll"
+    products = ActivewearApi.productsGetAll()
+when "productsFilterResults"
+    products = ActivewearApi.productsFilterResults(apiFilters) #B00760004
+when "productsFilterByStyles"
+    products = ActivewearApi.productsFilterByStyles(apiFilters)
+when "productsFilterByStyleId"
+    products = ActivewearApi.productsFilterByStyleId(apiFilters)
+when "productsFilterByPartNumber"
+    products = ActivewearApi.productsFilterByPartNumber(apiFilters)
+when "productsFilterWarehouses"
+    products = ActivewearApi.productsFilterWarehouses(apiWarehouses, apiFilters)
+when "productsFilterFields"
+    products = ActivewearApi.productsFilterFields(apiFields, apiFilters)
+else
+    puts "That method does not exist to run on Activewear API"
+end
+
+# Print products fetched via the API
+products.take(10).each do |product|
+    puts product
+end
