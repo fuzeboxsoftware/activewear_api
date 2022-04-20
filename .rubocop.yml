@@ -1,0 +1,13 @@
+require:
+- rubocop-performance
+- rubocop-rspec
+
+AllCops:
+ TargetRubyVersion: 3.0
+ NewCops: enable
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/MutableConstant:
+  Enabled: false
